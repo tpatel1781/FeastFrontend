@@ -1,10 +1,21 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
-export default class Login extends React.Component {
-  state = { email: '', password: '', errorMessage: null }
+import { withFirebase } from './firebase';
+class Login extends React.Component {
+  state = { email: '', password: '', error: null }
   handleLogin = () => {
-    // TODO: Firebase stuff...
-    console.log('handleLogin')
+    console.log(this.props);
+    const { email, password } = this.state;
+
+    this.props.firebase
+      .doSignInWithEmailAndPassword(email, password)
+      .then(() => {
+        this.props.navigation.navigate('Main');
+      })
+      .catch(error => {
+        this.setState({ error });
+      });
+      console.log('handleLogin')
   }
   render() {
     return (
@@ -12,7 +23,7 @@ export default class Login extends React.Component {
         <Text>Login</Text>
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
+            {this.state.error.message}
           </Text>}
         <TextInput
           style={styles.textInput}
@@ -52,3 +63,5 @@ const styles = StyleSheet.create({
     marginTop: 8
   }
 })
+
+export default withFirebase(Login)

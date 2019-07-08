@@ -5,16 +5,14 @@ import Firebase, { FirebaseContext } from './firebase';
 export default class Loading extends React.Component {
   render() {
     return (
-      <FirebaseContext.Provider value={new Firebase()}>
         <FirebaseContext.Consumer>
           {firebase => {
-            console.log(firebase)
             firebase.auth.onAuthStateChanged(user => {
+              console.log(user);
               this.props.navigation.navigate(user ? 'Main' : 'SignUp')
             })
           }}
         </FirebaseContext.Consumer>
-      </FirebaseContext.Provider>
     )
   }
 }
