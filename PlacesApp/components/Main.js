@@ -4,10 +4,15 @@ import MapView, {Marker} from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import { withFirebase } from './firebase';
+import AddPlaceModal from './AddPlaceModal';
 class MainBase extends React.Component {
   state = {
     error: null,
     markers: [],
+    modalVisible: false,
+  }
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
   }
   handleSignOut = () => {
     console.log(this.props);
@@ -22,6 +27,7 @@ class MainBase extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <AddPlaceModal isModalVisible={false}/>
         <Text>
           Hi!
         </Text>
@@ -44,6 +50,7 @@ class MainBase extends React.Component {
             this.setState((prevState) => ({
               markers: prevState.markers.concat([newMarker])
             }));
+            this.setModalVisible(false);
           }}
 
           getDefaultValue={() => ''}
@@ -88,7 +95,7 @@ class MainBase extends React.Component {
           debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
           renderRightButton={() => <Text>Custom text after the input</Text>}
         />
-        <MapView style={{ alignSelf: 'stretch', height: 400 }} initialRegion={{ latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421, }} showsUserLocation={true}>
+        <MapView style={{ alignSelf: 'stretch', height: 400 }} showsUserLocation={true}>
           {this.state.markers.map(marker => (
             <Marker
               coordinate={{

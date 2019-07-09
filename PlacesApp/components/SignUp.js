@@ -1,7 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import Firebase, { FirebaseContext, withFirebase } from './firebase';
-
+import {SERVER_URL} from '../constants';
+ 
 class SignUp extends React.Component {
   state = {
     email: '', username: '', password: '', confirmPassword: '', error: null, 
