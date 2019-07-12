@@ -4,7 +4,6 @@ import { withFirebase } from './firebase';
 class Login extends React.Component {
   state = { email: '', password: '', error: null }
   handleLogin = () => {
-    console.log(this.props);
     const { email, password } = this.state;
 
     this.props.firebase
@@ -15,7 +14,7 @@ class Login extends React.Component {
       .catch(error => {
         this.setState({ error });
       });
-      console.log('handleLogin')
+
   }
   render() {
     return (

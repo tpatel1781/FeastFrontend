@@ -15,7 +15,6 @@ class MainBase extends React.Component {
     this.setState({modalVisible: visible});
   }
   handleSignOut = () => {
-    console.log(this.props);
     this.props.firebase.doSignOut()
       .then(authUser => {
         this.props.navigation.navigate('Login');
@@ -28,9 +27,7 @@ class MainBase extends React.Component {
     return (
       <View style={styles.container}>
         <AddPlaceModal isModalVisible={false}/>
-        <Text>
-          Hi!
-        </Text>
+        
         <GooglePlacesAutocomplete
           placeholder='Search'
           minLength={2} // minimum length of text to search
@@ -41,7 +38,6 @@ class MainBase extends React.Component {
           fetchDetails={true}
           renderDescription={row => row.description} // custom description render
           onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-            console.log(details);
             const newMarker = {
               lat: details.geometry.location.lat,
               lng: details.geometry.location.lng,
@@ -95,6 +91,9 @@ class MainBase extends React.Component {
           debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
           renderRightButton={() => <Text>Custom text after the input</Text>}
         />
+        <Text>
+          {this.props.firebase.getCurrentUser().email} + "   user: " + {this.props.firebase.getCurrentUser().displayName}
+        </Text>
         <MapView style={{ alignSelf: 'stretch', height: 400 }} showsUserLocation={true}>
           {this.state.markers.map(marker => (
             <Marker

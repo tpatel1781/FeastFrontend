@@ -1,23 +1,38 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import Firebase, { FirebaseContext, withFirebase } from './firebase';
-import {SERVER_URL} from '../constants';
- 
+import axios from 'axios';
+import Constants from '../constants'
+
 class SignUp extends React.Component {
   state = {
-    email: '', username: '', password: '', confirmPassword: '', error: null, 
+    email: '', username: '', password: '', confirmPassword: '', error: null,
   }
   handleSignUp = () => {
-    console.log(this.props);
-    this.props.firebase
-      .doCreateUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(authUser => {
-        this.props.navigation.navigate('Main');
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
-    console.log('handleSignUp')
+    axios.post(Constants.SERVER_URL + "/addUser", {
+      username: this.state.username,
+      email: this.state.email,
+    }).then(response => {
+      if (response.status === 500) {
+        this.setState({error: response.data})
+      } else {
+        this.props.firebase
+          .doCreateUserWithEmailAndPassword(this.state.email, this.state.password)
+          .then(authUser => {
+            this.props.firebase.getCurrentUser().updateProfile({
+              displayName: this.state.username,
+            }).then(function () {
+              console.log(this.state.username)
+            }).catch(function (error) {
+              console.log(error)
+            });
+          })
+          .catch(error => {
+            this.setState({ error });
+          });
+      }
+    });
+
   }
   render() {
     const isInvalid =
