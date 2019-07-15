@@ -13,26 +13,17 @@ class SignUp extends React.Component {
       username: this.state.username,
       email: this.state.email,
     }).then(response => {
-      if (response.status === 500) {
-        this.setState({error: response.data})
-      } else {
-        this.props.firebase
-          .doCreateUserWithEmailAndPassword(this.state.email, this.state.password)
-          .then(authUser => {
-            this.props.firebase.getCurrentUser().updateProfile({
-              displayName: this.state.username,
-            }).then(function () {
-              console.log(this.state.username)
-            }).catch(function (error) {
-              console.log(error)
-            });
-          })
-          .catch(error => {
-            this.setState({ error });
-          });
-      }
+      this.props.firebase
+        .doCreateUserWithEmailAndPassword(this.state.email, this.state.password)
+        .then(authUser => {
+        })
+        .catch(error => {
+          this.setState({ error });
+        });
+    }).catch(error => {
+      console.log(error)
+      this.setState({ error })
     });
-
   }
   render() {
     const isInvalid =
