@@ -17,8 +17,9 @@ class SignUp extends React.Component {
         .doCreateUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(authUser => {
           authUser.updateProfile({
-            displayName: this.state.username,
-          })
+			displayName: this.state.username,
+		  })
+		  console.log('Auth user: ' + authUser);
           this.props.navigation.navigate('Main');
         })
         .catch(error => {

@@ -11,11 +11,8 @@ import Groups from './Groups';
 class MainBase extends React.Component {
   state = {
     error: null,
-    modalVisible: false,
   }
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
+
   handleSignOut = () => {
     this.props.firebase.doSignOut()
       .then(authUser => {
@@ -27,9 +24,9 @@ class MainBase extends React.Component {
   }
   render() {
     return (
-      <Swiper showsPagination={false} >
+      <Swiper showsPagination={false} loop={false} index={1}>
+		<Maps handleSignOut={this.handleSignOut} />
         <Groups />
-        <Maps handleSignOut={this.handleSignOut} />
       </Swiper>
     )
   }
