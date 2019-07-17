@@ -16,6 +16,9 @@ class SignUp extends React.Component {
       this.props.firebase
         .doCreateUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(authUser => {
+          authUser.updateProfile({
+            displayName: this.state.username,
+          })
           this.props.navigation.navigate('Main');
         })
         .catch(error => {
