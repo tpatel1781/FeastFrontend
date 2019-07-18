@@ -10,9 +10,9 @@ class GroupsBase extends React.Component {
 		user: ''
 	}
 	componentDidMount() {
-		axios.get(Constants.SERVER_URL + "/getUser", {
+		// axios.get(Constants.SERVER_URL + "/getUser", {
 
-		})
+		// })
 	}
     render() {
         return (

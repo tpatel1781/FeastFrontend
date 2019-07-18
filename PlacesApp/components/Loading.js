@@ -5,20 +5,17 @@ import Firebase, { FirebaseContext } from './firebase';
 export default class Loading extends React.Component {
   render() {
     return (
-        <FirebaseContext.Consumer>
-          {firebase => {
-            firebase.auth.onAuthStateChanged(user => {
-              this.props.navigation.navigate(user ? 'Main' : 'SignUp')
-            })
-          }}
-        </FirebaseContext.Consumer>
+      <FirebaseContext.Consumer>
+        {firebase => {
+          firebase.auth.onAuthStateChanged((user) => {
+            if (user) {
+              this.props.navigation.navigate('Main')
+            } else {
+              this.props.navigation.navigate('Login')
+            }
+          })
+        }}
+      </FirebaseContext.Consumer>
     )
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-})

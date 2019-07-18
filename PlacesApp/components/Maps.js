@@ -26,7 +26,8 @@ class MapsBase extends React.Component {
                         const newMarker = {
                             lat: details.geometry.location.lat,
                             lng: details.geometry.location.lng,
-                            description: details.name
+                            description: details.name,
+                            key: 1
                         }
                         this.setState((prevState) => ({
                             markers: prevState.markers.concat([newMarker])
