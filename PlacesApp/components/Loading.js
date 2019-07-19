@@ -1,24 +1,22 @@
 import React from 'react'
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import Firebase, { FirebaseContext } from './firebase';
+import Firebase, { FirebaseContext, withFirebase } from './firebase';
 
-export default class Loading extends React.Component {
+class LoadingBase extends React.Component {
+  componentDidMount() {
+    this.props.firebase.auth.onAuthStateChanged(user => {
+      if(user && user.displayName) {
+        this.props.navigation.navigate('Main')
+      } else {
+        this.props.navigation.navigate('SignUp')
+      }
+    })
+  }
   render() {
-    return (
-        <FirebaseContext.Consumer>
-          {firebase => {
-            firebase.auth.onAuthStateChanged(user => {
-              this.props.navigation.navigate(user ? 'Main' : 'SignUp')
-            })
-          }}
-        </FirebaseContext.Consumer>
+    return(
+      <View />
     )
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-})
+
+export default withFirebase(LoadingBase)

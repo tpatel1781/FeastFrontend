@@ -6,21 +6,23 @@ import Constants from '../constants'
 
 class SignUp extends React.Component {
   state = {
-    email: '', username: '', password: '', confirmPassword: '', error: null,
+    email: '', username: '', password: '', confirmPassword: '', error: null, loggedIn: false
   }
+
   handleSignUp = () => {
     axios.post(Constants.SERVER_URL + "/addUser", {
       username: this.state.username,
       email: this.state.email,
     }).then(response => {
       this.props.firebase
-        .doCreateUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then(authUser => {
-          authUser.updateProfile({
-			displayName: this.state.username,
-		  })
-		  console.log('Auth user: ' + authUser);
-          this.props.navigation.navigate('Main');
+        .doCreateUserWithEmailAndPasswordAndUsername(this.state.email, this.state.password).then((userCredentials) => {
+          if (userCredentials.user) {
+            userCredentials.user.updateProfile({
+              displayName: this.state.username
+            }).then(userCredentials => {
+              this.props.navigation.navigate("Main")
+            })
+          }
         })
         .catch(error => {
           this.setState({ error });
@@ -37,14 +39,15 @@ class SignUp extends React.Component {
       this.state.email === '' ||
       this.state.username === '';
     return (
-      <View style={styles.container}>
+      <View style={styles.container} >
 
         <Text>Sign Up</Text>
         {this.state.error &&
           <Text style={{ color: 'red' }}>
             {this.state.error.message}
-          </Text>}
-        <TextInput
+          </Text>
+        }
+        < TextInput
           placeholder="Email"
           autoCapitalize="none"
           style={styles.textInput}
@@ -79,7 +82,7 @@ class SignUp extends React.Component {
           title="Already have an account? Login"
           onPress={() => this.props.navigation.navigate('Login')}
         />
-      </View>
+      </View >
     )
   }
 }
