@@ -9,6 +9,8 @@ import { withFirebase } from './firebase';
 class MapsBase extends React.Component {
     state = {
         markers: [],
+        displayName: this.props.firebase.getCurrentUser().displayName,
+        email: this.props.firebase.getCurrentUser().email,
     }
     render() {
         return (
@@ -77,8 +79,9 @@ class MapsBase extends React.Component {
                     renderRightButton={() => <Text>Custom text after the input</Text>}
                 />
                 <Text>
-                    {this.props.firebase.getCurrentUser().email} + "   user: " + {this.props.firebase.getCurrentUser().displayName}
+                    {this.state.email} + "   user: " + {this.state.displayName}
                 </Text>
+            
                 <MapView style={{ alignSelf: 'stretch', height: 400 }} showsUserLocation={true}>
                     {this.state.markers.map(marker => (
                         <Marker

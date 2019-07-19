@@ -8,22 +8,21 @@ class SignUp extends React.Component {
   state = {
     email: '', username: '', password: '', confirmPassword: '', error: null, loggedIn: false
   }
+
   handleSignUp = () => {
-    console.log("HELLO")
     axios.post(Constants.SERVER_URL + "/addUser", {
       username: this.state.username,
       email: this.state.email,
     }).then(response => {
       this.props.firebase
-        .doCreateUserWithEmailAndPasswordAndUsername(this.state.email, this.state.password, this.state.username)
-        .then(authUser => {
-          console.log("CREATED USER")
-          this.props.firebase.getCurrentUser().updateProfile({
-            displayName: this.state.username,
-          }).then(() => {
-          }).catch(error => {
-            this.setState({ error });
-          });
+        .doCreateUserWithEmailAndPasswordAndUsername(this.state.email, this.state.password).then((userCredentials) => {
+          if (userCredentials.user) {
+            userCredentials.user.updateProfile({
+              displayName: this.state.username
+            }).then(userCredentials => {
+              this.props.navigation.navigate("Main")
+            })
+          }
         })
         .catch(error => {
           this.setState({ error });
