@@ -1,20 +1,72 @@
 import React from 'react'
-import { StyleSheet, Platform, Button, Image, Text, View } from 'react-native'
+import { Modal, StyleSheet, Platform, Button, Image, Text, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import Swiper from 'react-native-swiper'
-
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import Constants from '../constants'
+import axios from 'axios';
 
 import { withFirebase } from './firebase';
+
 class MapsBase extends React.Component {
     state = {
         markers: [],
         displayName: this.props.firebase.getCurrentUser().displayName,
         email: this.props.firebase.getCurrentUser().email,
+        modalVisible: false,
+        modalLocation: "",
+        locationRating: "",
+        googleID: "",
+    }
+    setModalVisible(visible) {
+        this.setState({ modalVisible: visible });
+    }
+    onFinishRating(rating) {
+        this.setState({
+            locationRating: rating,
+        })
+    }
+    submitRating() {
+        axios.post(Constants.SERVER_URL + "/addPlace", {
+            username: this.state.username,
+            name: this.state.modalLocation,
+            googleID: this.state.googleID, 
+            rating: this.state.locationRating,
+          }).then(response => {
+              console.log(response);
+          })
     }
     render() {
         return (
             <View style={styles.container}>
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={this.state.modalVisible}
+                    presentationStyle={"pageSheet"}
+                    onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                    }}>
+                    <View style={{ marginTop: 60 }}>
+                        <View>
+                            <Text>{this.state.modalLocation}</Text>
+                            <AirbnbRating onFinishRating={() => {this.onFinishRating}} />
+                            <Button
+                                title="Close"
+                                onPress={() => {
+                                    this.setModalVisible(!this.state.modalVisible);
+                                }}
+                            />
+                            <Button
+                                title="Submit Rating"
+                                onPress={() => {
+                                    this.submitRating();
+                                }}
+                            />
+                        </View>
+
+                    </View>
+                </Modal>
                 <GooglePlacesAutocomplete
                     placeholder='Search'
                     minLength={2} // minimum length of text to search
@@ -25,14 +77,18 @@ class MapsBase extends React.Component {
                     fetchDetails={true}
                     renderDescription={row => row.description} // custom description render
                     onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                        console.log(details);
                         const newMarker = {
                             lat: details.geometry.location.lat,
                             lng: details.geometry.location.lng,
                             description: details.name,
                             key: 1
                         }
+                        this.setModalVisible(true);
                         this.setState((prevState) => ({
-                            markers: prevState.markers.concat([newMarker])
+                            markers: prevState.markers.concat([newMarker]),
+                            modalLocation: details.name,
+                            googleID: details.id,
                         }));
                     }}
 
@@ -81,7 +137,7 @@ class MapsBase extends React.Component {
                 <Text>
                     {this.state.email} + "   user: " + {this.state.displayName}
                 </Text>
-            
+
                 <MapView style={{ alignSelf: 'stretch', height: 400 }} showsUserLocation={true}>
                     {this.state.markers.map(marker => (
                         <Marker
