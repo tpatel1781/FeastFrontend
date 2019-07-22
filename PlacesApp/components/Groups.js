@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, Platform, Button, Image, Text, View } from 'react-native'
+import { StyleSheet, Platform, Button, Image, Text, View, Modal } from 'react-native'
+import { SearchBar } from 'react-native-elements';
 import axios from 'axios'
 import Constants from '../constants'
 
@@ -8,7 +9,7 @@ import GroupItem from './GroupItem';
 
 class GroupsBase extends React.Component {
 	state = {
-		user: '', username: '', groups: []
+		user: '', username: '', groups: [], modalVisible: false, search: ''
 	}
 	/**
 	 * Put all of the group names for this user in state.groups so GroupItems 
@@ -38,36 +39,78 @@ class GroupsBase extends React.Component {
 			console.log("User data: " + JSON.stringify(response.data));
 		});
 	}
-    render() {
+
+	setModalVisible(visible) { this.setState({ modalVisible: visible }); }
+	updateSearch = search => { this.setState({ search }); };
+
+	render() {
 		var groupItemList = [];
 		this.state.groups.forEach(function (group) {
 			groupItemList.push(
 				<GroupItem name={group.name} key={group.groupID} description={group.users.join(', ')} />
 			);
 		}.bind(this));
-        return (
-            <View style={styles.container}>
-				<Text style={styles.title}>Groups</Text>
+		const { search } = this.state;
+		return (
+			<View style={styles.container}>
+				<Modal
+					animationType="slide"
+					transparent={false}
+					visible={this.state.modalVisible}
+					onRequestClose={() => {
+						Alert.alert('Modal has been closed.');
+					}}>
+					<View style={{ marginTop: 50 }}>
+						<View>
+							<SearchBar
+								placeholder="Search by username..."
+								onChangeText={this.updateSearch}
+								value={search}
+								platform= "ios"
+								lightTheme={true}
+							/>
+
+							<Button
+								onPress={() => {
+									this.setModalVisible(!this.state.modalVisible);
+								}}
+								title="Close Modal"
+							/>
+						</View>
+					</View>
+				</Modal>
+				<View style={styles.header}>
+					<Text style={styles.title}>Groups</Text>
+					<View style={{ marginLeft: 150 }}>
+						<Button
+							onPress={() => {
+								this.setModalVisible(true);
+							}}
+							title="New Group" />
+					</View>
+
+				</View>
+
 				{groupItemList}
-                {/* <GroupItem name='IV Squad' description='Sample description' /> */}
-				{/* <GroupItem name='Group 1' description='Starbucks Berlin Turnpike' /> */}
-				{/* <GroupItem name='Group 2' description='Amelias Boston' /> */}
-            </View>
-        )
-    }
+			</View>
+		)
+	}
 }
 const styles = StyleSheet.create({
-    container: {
+	container: {
 		marginTop: 12,
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start'
+		flex: 1,
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start'
+	},
+	header: {
+		flexDirection: 'row',
+		marginTop: 50,
+		marginLeft: 20
 	},
 	title: {
 		fontWeight: 'bold',
-		fontSize: 32,
-		marginTop: 50,
-		marginLeft: 20
+		fontSize: 32
 	}
 })
 
