@@ -17,7 +17,7 @@ class GroupsBase extends React.Component {
 	componentDidMount() {
 		axios.get(Constants.SERVER_URL + "/getUser", {
 			params: {
-				username: 'hermitsuan'
+				username: this.props.firebase.getCurrentUser().displayName
 			}
 			// Pass the username from Firebase to make the getUser call
 		}).then(response => {
@@ -25,7 +25,7 @@ class GroupsBase extends React.Component {
 				axios.get(Constants.SERVER_URL + '/getGroup', {
 					params: { groupID: groupID }
 				}).then(response => {
-					console.log("REsponse data: " + JSON.stringify(response.data));
+					console.log("Response data: " + JSON.stringify(response.data));
 					this.setState((prevState) => ({
 						groups: prevState.groups.concat([response.data])
 					}));
