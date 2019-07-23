@@ -17,6 +17,21 @@ class MapsBase extends React.Component {
         modalLocation: "",
         locationRating: "",
         googleID: "",
+        map: "",
+        position: {longitude: 0, latitude: 0},
+    }
+    componentDidMount() {
+        navigator.geolocation.getCurrentPosition((position) => {
+            console.log("Position: " + JSON.stringify(position))
+            this.setState({position: {longitude: position.coords.longitude, latitude: position.coords.latitude}});
+        }, (error) => {
+            console.log(JSON.stringify(error))
+        }, {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 1000
+        });
+        
     }
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
@@ -25,16 +40,18 @@ class MapsBase extends React.Component {
         this.setState({
             locationRating: rating,
         })
+        console.log(this.state.locationRating)
     }
     submitRating() {
+        console.log(this.state.displayName + " " + this.state.modalLocation + " " + this.state.googleID + " " + this.state.locationRating)
         axios.post(Constants.SERVER_URL + "/addPlace", {
-            username: this.state.username,
+            username: this.state.displayName,
             name: this.state.modalLocation,
-            googleID: this.state.googleID, 
+            googleID: this.state.googleID,
             rating: this.state.locationRating,
-          }).then(response => {
-              console.log(response);
-          })
+        }).then(response => {
+            console.log(response);
+        })
     }
     render() {
         return (
@@ -50,7 +67,7 @@ class MapsBase extends React.Component {
                     <View style={{ marginTop: 60 }}>
                         <View>
                             <Text>{this.state.modalLocation}</Text>
-                            <AirbnbRating onFinishRating={() => {this.onFinishRating}} />
+                            <AirbnbRating onFinishRating={(value) => { this.onFinishRating(value) }} />
                             <Button
                                 title="Close"
                                 onPress={() => {
@@ -82,7 +99,7 @@ class MapsBase extends React.Component {
                             lat: details.geometry.location.lat,
                             lng: details.geometry.location.lng,
                             description: details.name,
-                            key: 1
+                            key: details.id
                         }
                         this.setModalVisible(true);
                         this.setState((prevState) => ({
@@ -138,7 +155,14 @@ class MapsBase extends React.Component {
                     {this.state.email} + "   user: " + {this.state.displayName}
                 </Text>
 
-                <MapView style={{ alignSelf: 'stretch', height: 400 }} showsUserLocation={true}>
+                <MapView
+                    provider={"google"}
+                    style={{ alignSelf: 'stretch', height: 400 }}
+                    showsUserLocation={true}
+                    followsUserLocation={true}
+                    onPoiClick={({ nativeEvent }) => console.log(nativeEvent)}
+                    region={this.state.position}
+                >
                     {this.state.markers.map(marker => (
                         <Marker
                             coordinate={{
@@ -147,6 +171,7 @@ class MapsBase extends React.Component {
                             }}
                             title='place'
                             description={marker.description}
+                            key={marker.key}
                         />
                     ))}
                 </MapView>
@@ -154,7 +179,7 @@ class MapsBase extends React.Component {
                     title="Sign Out"
                     onPress={this.props.handleSignOut}
                 />
-            </View>
+            </View >
         )
     }
 
