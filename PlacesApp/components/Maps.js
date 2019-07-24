@@ -18,20 +18,20 @@ class MapsBase extends React.Component {
         locationRating: "",
         googleID: "",
         map: "",
-        position: {longitude: 0, latitude: 0},
+        position: null,
     }
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
             console.log("Position: " + JSON.stringify(position))
-            this.setState({position: {longitude: position.coords.longitude, latitude: position.coords.latitude}});
+            this.setState({ position: { longitude: position.coords.longitude, latitude: position.coords.latitude, latitudeDelta: 0.001, longitudeDelta: 0.001 } });
         }, (error) => {
             console.log(JSON.stringify(error))
         }, {
-            enableHighAccuracy: true,
-            timeout: 20000,
-            maximumAge: 1000
-        });
-        
+                enableHighAccuracy: true,
+                timeout: 20000,
+                maximumAge: 1000
+            });
+
     }
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
@@ -51,21 +51,53 @@ class MapsBase extends React.Component {
             rating: this.state.locationRating,
         }).then(response => {
             console.log(response);
+            this.setModalVisible(false)
         })
     }
     render() {
         return (
             <View style={styles.container}>
+                {this.state.position ? (<MapView
+                    provider={"google"}
+                    style={styles.map}
+                    showsUserLocation={true}
+                    followsUserLocation={true}
+                    onPoiClick={({ nativeEvent }) => console.log(nativeEvent)}
+                    region={this.state.position}
+                >
+                    {this.state.markers.map(marker => (
+                        <Marker
+                            coordinate={{
+                                latitude: marker.lat,
+                                longitude: marker.lng
+                            }}
+                            title='place'
+                            description={marker.description}
+                            key={marker.key}
+                        />
+                    ))}
+                </MapView>) : null}
                 <Modal
-                    animationType="slide"
-                    transparent={false}
+                    animationType="fade"
+                    transparent={true}
                     visible={this.state.modalVisible}
-                    presentationStyle={"pageSheet"}
+                    presentationStyle={"overFullScreen"}
                     onRequestClose={() => {
                         Alert.alert('Modal has been closed.');
                     }}>
-                    <View style={{ marginTop: 60 }}>
-                        <View>
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#00000080'
+                    }}>
+                        <View style={{
+                            width: 300,
+                            height: 300,
+                            backgroundColor: '#fff', 
+                            padding: 20
+                        }}>
                             <Text>{this.state.modalLocation}</Text>
                             <AirbnbRating onFinishRating={(value) => { this.onFinishRating(value) }} />
                             <Button
@@ -81,10 +113,11 @@ class MapsBase extends React.Component {
                                 }}
                             />
                         </View>
-
                     </View>
                 </Modal>
                 <GooglePlacesAutocomplete
+                    position='absolute'
+                    style={styles.floating}
                     placeholder='Search'
                     minLength={2} // minimum length of text to search
                     autoFocus={false}
@@ -155,26 +188,6 @@ class MapsBase extends React.Component {
                     {this.state.email} + "   user: " + {this.state.displayName}
                 </Text>
 
-                <MapView
-                    provider={"google"}
-                    style={{ alignSelf: 'stretch', height: 400 }}
-                    showsUserLocation={true}
-                    followsUserLocation={true}
-                    onPoiClick={({ nativeEvent }) => console.log(nativeEvent)}
-                    region={this.state.position}
-                >
-                    {this.state.markers.map(marker => (
-                        <Marker
-                            coordinate={{
-                                latitude: marker.lat,
-                                longitude: marker.lng
-                            }}
-                            title='place'
-                            description={marker.description}
-                            key={marker.key}
-                        />
-                    ))}
-                </MapView>
                 <Button
                     title="Sign Out"
                     onPress={this.props.handleSignOut}
@@ -190,6 +203,19 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    floating: {
+        marginTop: 40
+    },
+    map: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        position: 'absolute'
+    },
+    modal: {
+        margin: 40,
     }
 })
 
