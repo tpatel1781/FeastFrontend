@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     mainContainer: {
 		marginTop: 30,
 		marginLeft: 20,
+		marginRight: 20,
         flex: 1,
         justifyContent: 'flex-start',
 		alignItems: 'flex-start',
@@ -34,10 +35,13 @@ const styles = StyleSheet.create({
 		marginLeft: 10
 	},
 	groupName: {
-		fontWeight: 'bold'
+		fontWeight: 'bold',
+		flexWrap: 'wrap',
+		flex: 1
 	},
 	descriptionText: {
-
+		flexWrap: 'wrap',
+		flex: 1
 	}
 
 })

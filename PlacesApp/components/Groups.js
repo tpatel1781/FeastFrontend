@@ -1,6 +1,6 @@
 import React from 'react'
-import { StyleSheet, Platform, Button, Image, Text, View, Modal } from 'react-native'
-import { SearchBar } from 'react-native-elements';
+import { StyleSheet, Platform, Image, Text, View, Modal, ScrollView } from 'react-native'
+import { Button, SearchBar } from 'react-native-elements';
 import axios from 'axios'
 import Constants from '../constants'
 
@@ -9,13 +9,17 @@ import GroupItem from './GroupItem';
 
 class GroupsBase extends React.Component {
 	state = {
-		user: '', username: '', groups: [], modalVisible: false, search: ''
+		user: '', username: '', groups: [], modalVisible: false, search: '', searchResultText: '',
+		showResult: false, newGroupUserList: [this.props.firebase.getCurrentUser().displayName]
 	}
 	/**
 	 * Put all of the group names for this user in state.groups so GroupItems 
 	 * can be populated with the names
 	 */
-	componentDidMount() {
+	getUserGroups  = () => {
+		this.setState({
+			groups: []
+		})
 		axios.get(Constants.SERVER_URL + "/getUser", {
 			params: {
 				username: this.props.firebase.getCurrentUser().displayName
@@ -34,23 +38,58 @@ class GroupsBase extends React.Component {
 					console.log("Group Names: " + this.state.groups);
 				});
 			}
-			// add a group to the hermitsuan user and then try this again
 			// console.log("Group Names:  " + JSON.stringify(this.state.groups));
 			console.log("User data: " + JSON.stringify(response.data));
 		});
 	}
 
-	setModalVisible(visible) { this.setState({ modalVisible: visible }); }
-	updateSearch = search => { this.setState({ search }); };
+	componentDidMount() {
+		this.getUserGroups();
+	}
+
+	setModalVisible(visible) { 
+		this.setState({ modalVisible: visible }); 
+		
+		if (visible) {
+			this.setState({
+				newGroupUserList: [this.props.firebase.getCurrentUser().displayName],
+				search: '',
+				showResult: false
+			})
+		}
+	}
+
+	updateSearch = search => {
+		this.setState({ search });
+		axios.get(Constants.SERVER_URL + "/getUser", {
+			params: {
+				username: search
+			}
+		}).then(response => {
+			console.log("User " + JSON.stringify(response.data));
+			this.setState({ searchResultText: response.data._id });
+			this.setState({ showResult: true });
+		}).catch(error => {
+			// console.log("Didnt find user: " + search); Use for debugging
+			this.setState({ searchResultText: '' });
+			this.setState({ showResult: false });
+		})
+	};
 
 	render() {
 		var groupItemList = [];
 		this.state.groups.forEach(function (group) {
 			groupItemList.push(
-				<GroupItem name={group.name} key={group.groupID} description={group.users.join(', ')} />
+				<GroupItem
+					name={group.name} 
+					key={group.groupID} 
+					description={group.users.filter(name => name != this.props.firebase.getCurrentUser().displayName).join(', ')}
+				/>
 			);
 		}.bind(this));
+
 		const { search } = this.state;
+		
 		return (
 			<View style={styles.container}>
 				<Modal
@@ -66,19 +105,61 @@ class GroupsBase extends React.Component {
 								placeholder="Search by username..."
 								onChangeText={this.updateSearch}
 								value={search}
-								platform= "ios"
+								platform="ios"
 								lightTheme={true}
 							/>
+							{this.state.showResult ? (<View style={styles.searchResult}>
+								<Text style={{ fontSize: 18 }}>{this.state.searchResultText}</Text>
+								<Button
+									title="Add"
+									style={{ marginLeft: 200 }}
+									// Disable the 'add' button if the user searched themselves or if the user is already in the group
+									disabled={this.state.newGroupUserList.includes(this.state.searchResultText) || 
+										this.state.searchResultText == this.props.firebase.getCurrentUser().displayName}
+									onPress={() => {
+										// Add this user to a list of users to add to this group and display it on the list at the bottom
+										if (!this.state.newGroupUserList.includes(this.state.searchResultText)) {
+											this.setState((prevState) => ({
+												newGroupUserList: prevState.newGroupUserList.concat([this.state.searchResultText])
+											}));
+										}
+									}} />
+							</View>) : null}
 
 							<Button
 								onPress={() => {
 									this.setModalVisible(!this.state.modalVisible);
 								}}
 								title="Close Modal"
+								style={{ alignItems: 'flex-end' }}
 							/>
+							<View>
+								<Text style={{ fontSize: 24, flexWrap: 'wrap' }}>
+									{this.state.newGroupUserList.filter(name => name != this.props.firebase.getCurrentUser().displayName).toString()}
+								</Text>
+								<Button
+									title="Create Group"
+									onPress={() => {
+										axios.post(Constants.SERVER_URL + "/addGroup", {
+											username: this.props.firebase.getCurrentUser().displayName,
+											group: this.state.newGroupUserList,
+											name: this.state.newGroupUserList.filter(name => name != this.props.firebase.getCurrentUser().displayName).toString()
+										}).then(response => {
+											console.log("Added groups: " + JSON.stringify(response.data));
+											this.setModalVisible(!this.state.modalVisible);
+											this.getUserGroups();
+										}).catch(error => {
+											console.log("Errored here");
+										})
+									}}
+								/>
+							</View>
+
+
 						</View>
 					</View>
 				</Modal>
+
 				<View style={styles.header}>
 					<Text style={styles.title}>Groups</Text>
 					<View style={{ marginLeft: 150 }}>
@@ -90,8 +171,8 @@ class GroupsBase extends React.Component {
 					</View>
 
 				</View>
-
-				{groupItemList}
+				<ScrollView>{groupItemList}</ScrollView>
+				
 			</View>
 		)
 	}
@@ -111,7 +192,12 @@ const styles = StyleSheet.create({
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32
+	},
+	searchResult: {
+		flexDirection: 'row',
+		margin: 20
 	}
+
 })
 
 export default withFirebase(GroupsBase)
