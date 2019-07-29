@@ -6,6 +6,8 @@ import Loading from './Loading'
 import SignUp from './SignUp'
 import Login from './Login'
 import Main from './Main'
+import Groups from './Groups'
+import GroupThread from './GroupThread'
 
 // create our app's navigation stack
 const Navigator = createSwitchNavigator(
@@ -13,7 +15,8 @@ const Navigator = createSwitchNavigator(
     Loading,
     SignUp,
     Login,
-    Main
+	Main,
+	GroupThread
   },
   {
     initialRouteName: 'Loading'

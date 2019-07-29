@@ -40,16 +40,11 @@ class GroupsBase extends React.Component {
 				axios.get(Constants.SERVER_URL + '/getGroup', {
 					params: { groupID: groupID }
 				}).then(response => {
-					console.log("Response data: " + JSON.stringify(response.data));
 					this.setState((prevState) => ({
 						groups: prevState.groups.concat([response.data])
 					}));
-					console.log("Added " + response.data)
-					console.log("Group Names: " + this.state.groups);
 				});
 			}
-			// console.log("Group Names:  " + JSON.stringify(this.state.groups));
-			console.log("User data: " + JSON.stringify(response.data));
 		});
 	}
 
@@ -76,23 +71,17 @@ class GroupsBase extends React.Component {
 				username: search
 			}
 		}).then(response => {
-			console.log("User " + JSON.stringify(response.data));
 			this.setState({ searchResultText: response.data._id });
 			this.setState({ showResult: true });
 		}).catch(error => {
-			// console.log("Didnt find user: " + search); Use for debugging
 			this.setState({ searchResultText: '' });
 			this.setState({ showResult: false });
 		})
 	};
 
 	//TODO: Fill in what info is needed)
-	showThread = (name, description) => {
-		this.setState({
-			threadVisible: true,
-			threadDescription: description,
-			threadTitle: name,
-		})
+	showThread = (groupID) => {
+		this.props.navigation.navigate('GroupThread', {groupID: groupID});
 	}
 
 
@@ -102,9 +91,10 @@ class GroupsBase extends React.Component {
 			groupItemList.push(
 				<GroupItem
 					name={group.name} 
-					key={group.groupID} 
+					key={group._id} 
 					description={group.users.filter(name => name != this.props.firebase.getCurrentUser().displayName).join(', ')}
 					showThread={this.showThread}
+					groupID={group._id}
 				/>
 			);
 		}.bind(this));
@@ -166,7 +156,6 @@ class GroupsBase extends React.Component {
 											group: this.state.newGroupUserList,
 											name: this.state.newGroupUserList.filter(name => name != this.props.firebase.getCurrentUser().displayName).toString()
 										}).then(response => {
-											console.log("Added groups: " + JSON.stringify(response.data));
 											this.setModalVisible(!this.state.modalVisible);
 											this.getUserGroups();
 										}).catch(error => {
@@ -179,10 +168,7 @@ class GroupsBase extends React.Component {
 					</View>
 				</Modal>
 				
-				{this.state.threadVisible ? 
-					(<GroupThread description={this.state.threadDescription}/>):
-					null
-				}
+				
 				<View style={styles.header}>
 					<Text style={styles.title}>Groups</Text>
 					<View style={{ marginLeft: 150 }}>

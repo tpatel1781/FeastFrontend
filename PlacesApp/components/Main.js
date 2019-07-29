@@ -25,8 +25,8 @@ class MainBase extends React.Component {
   render() {
     return (
       <Swiper showsPagination={false} loop={false} index={1}>
-        <Maps handleSignOut={this.handleSignOut} />
-        <Groups />
+        <Maps handleSignOut={this.handleSignOut} navigation={this.props.navigation} />
+        <Groups navigation={this.props.navigation}/>
       </Swiper>
     )
   }

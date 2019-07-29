@@ -3,17 +3,14 @@ import { StyleSheet, Platform, Button, Image, Text, View, TouchableHighlight } f
 
 export default class GroupItem extends React.Component {
 	onPressGroup = () => {
-		this.props.showThread(this.props.name, this.props.description)
+		this.props.showThread(this.props.groupID);
 	}
 	render() {
 		return (
 			<TouchableHighlight onPress={this.onPressGroup}>
 				<View style={styles.mainContainer}>
-					<Image style={styles.profilePicture} source={require('../assets/profile-placeholder.png')} />
-					<View style={styles.childContainer}>
-						<Text style={styles.groupName}>{this.props.name}</Text>
-						<Text style={styles.descriptionText}>{this.props.description}</Text>
-					</View>
+					<Text style={styles.groupName} numberOfLines={1}>{this.props.name}</Text>
+					<Text style={styles.descriptionText} numberOfLines={2}>{this.props.description}</Text>
 				</View>
 			</TouchableHighlight>
 		)
@@ -22,31 +19,16 @@ export default class GroupItem extends React.Component {
 const styles = StyleSheet.create({
 	mainContainer: {
 		marginTop: 30,
-		marginLeft: 20,
+		marginLeft: 24,
 		marginRight: 20,
-		flex: 1,
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
-		flexDirection: 'row',
-	},
-	profilePicture: {
-		width: 50,
-		height: 50,
-		borderRadius: 25,
-	},
-	childContainer: {
 		flexDirection: 'column',
-		marginTop: 5,
-		marginLeft: 10
 	},
 	groupName: {
 		fontWeight: 'bold',
-		flexWrap: 'wrap',
-		flex: 1
 	},
 	descriptionText: {
-		flexWrap: 'wrap',
-		flex: 1
 	}
 
 })
