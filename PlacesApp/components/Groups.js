@@ -6,11 +6,21 @@ import Constants from '../constants'
 
 import { withFirebase } from './firebase';
 import GroupItem from './GroupItem';
+import GroupThread from './GroupThread';
 
 class GroupsBase extends React.Component {
 	state = {
-		user: '', username: '', groups: [], modalVisible: false, search: '', searchResultText: '',
-		showResult: false, newGroupUserList: [this.props.firebase.getCurrentUser().displayName]
+		user: '', 
+		username: '',
+		groups: [], 
+		modalVisible: false,
+		search: '', 
+		searchResultText: '',
+		showResult: false, 
+		newGroupUserList: [this.props.firebase.getCurrentUser().displayName],
+		threadVisible: '',
+		threadTitle: '',
+		threadDescription: '',
 	}
 	/**
 	 * Put all of the group names for this user in state.groups so GroupItems 
@@ -76,6 +86,16 @@ class GroupsBase extends React.Component {
 		})
 	};
 
+	//TODO: Fill in what info is needed)
+	showThread = (name, description) => {
+		this.setState({
+			threadVisible: true,
+			threadDescription: description,
+			threadTitle: name,
+		})
+	}
+
+
 	render() {
 		var groupItemList = [];
 		this.state.groups.forEach(function (group) {
@@ -84,6 +104,7 @@ class GroupsBase extends React.Component {
 					name={group.name} 
 					key={group.groupID} 
 					description={group.users.filter(name => name != this.props.firebase.getCurrentUser().displayName).join(', ')}
+					showThread={this.showThread}
 				/>
 			);
 		}.bind(this));
@@ -154,12 +175,14 @@ class GroupsBase extends React.Component {
 									}}
 								/>
 							</View>
-
-
 						</View>
 					</View>
 				</Modal>
-
+				
+				{this.state.threadVisible ? 
+					(<GroupThread description={this.state.threadDescription}/>):
+					null
+				}
 				<View style={styles.header}>
 					<Text style={styles.title}>Groups</Text>
 					<View style={{ marginLeft: 150 }}>
