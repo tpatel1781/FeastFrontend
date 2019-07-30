@@ -50,6 +50,8 @@ class GroupsBase extends React.Component {
 
 	componentDidMount() {
 		this.getUserGroups();
+		this.props.navigation.setParams({ newGroup: () => this.setModalVisible(true)})
+		this.props.navigation.setParams({ swipeEnabled: false })
 	}
 
 	setModalVisible(visible) { 
@@ -167,19 +169,6 @@ class GroupsBase extends React.Component {
 						</View>
 					</View>
 				</Modal>
-				
-				
-				<View style={styles.header}>
-					<Text style={styles.title}>Groups</Text>
-					<View style={{ marginLeft: 150 }}>
-						<Button
-							onPress={() => {
-								this.setModalVisible(true);
-							}}
-							title="New Group" />
-					</View>
-
-				</View>
 				<ScrollView>{groupItemList}</ScrollView>
 				
 			</View>
@@ -188,7 +177,6 @@ class GroupsBase extends React.Component {
 }
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 12,
 		flex: 1,
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start'
