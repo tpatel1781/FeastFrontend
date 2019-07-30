@@ -9,7 +9,7 @@ class Login extends React.Component {
     this.props.firebase
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
-        this.props.navigation.navigate('Main');
+        this.props.navigation.navigate('GroupsNavigator');
       })
       .catch(error => {
         this.setState({ error });

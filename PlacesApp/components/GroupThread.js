@@ -8,7 +8,7 @@ export default class GroupThread extends React.Component {
             <View style={styles.mainContainer}>
                 <Text>{groupID}</Text>
 				<Button onPress={() => 
-					this.props.navigation.navigate('Main')
+					this.props.navigation.goBack()
 				} title={"GO BACK"}/>
             </View>
         )
