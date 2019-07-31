@@ -130,7 +130,6 @@ class MapsBase extends React.Component {
                     fetchDetails={true}
                     renderDescription={row => row.description} // custom description render
                     onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                        console.log(details);
                         const newMarker = {
                             lat: details.geometry.location.lat,
                             lng: details.geometry.location.lng,
@@ -174,7 +173,7 @@ class MapsBase extends React.Component {
                     GooglePlacesSearchQuery={{
                         // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
                         rankby: 'distance',
-                        type: 'cafe'
+                        type: 'restaurant'
                     }}
 
                     GooglePlacesDetailsQuery={{

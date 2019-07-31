@@ -6,7 +6,6 @@ import { createSwitchNavigator, createAppContainer, createStackNavigator, create
 import Loading from './Loading'
 import SignUp from './SignUp'
 import Login from './Login'
-import Main from './Main'
 import Maps from './Maps'
 import Groups from './Groups'
 import GroupThread from './GroupThread'
