@@ -11,15 +11,46 @@ import Maps from './Maps'
 import Groups from './Groups'
 import GroupThread from './GroupThread'
 
-const GroupAndMapNavigator = createBottomTabNavigator(
+const MapNavigator = createStackNavigator(
   {
     Maps: {
       screen: Maps,
-      navigationOptions: {
-      }
+      navigationOptions: ({ navigation }) => ({
+        headerLeft: <Text style={{
+          fontWeight: 'bold',
+          marginLeft: 20,
+          fontSize: 32
+        }}>Maps</Text>,
+      }),
     },
+  }
+)
+
+const GroupNavigator = createStackNavigator(
+  {
     Groups: {
       screen: Groups,
+      navigationOptions: ({ navigation }) => ({
+        headerLeft: <Text style={{
+          fontWeight: 'bold',
+          marginLeft: 20,
+          fontSize: 32
+        }}>Groups</Text>,
+        headerRight: <Button
+          onPress={navigation.getParam('newGroup')}
+          title="New Group" />
+      }),
+    },
+  }
+)
+
+const GroupAndMapNavigator = createBottomTabNavigator(
+  {
+    Maps: {
+      screen: MapNavigator,
+    },
+    Groups: {
+      screen: GroupNavigator,
     },
   },
   {
@@ -32,14 +63,7 @@ const GroupsNavigator = createStackNavigator(
     GroupAndMapNavigator: {
       screen: GroupAndMapNavigator,
       navigationOptions: ({ navigation }) => ({
-        headerLeft: <Text style={{
-          fontWeight: 'bold',
-          marginLeft: 20,
-          fontSize: 32
-        }}>Groups</Text>,
-        headerRight: <Button
-          onPress={navigation.getParam('newGroup')}
-          title="New Group" />
+        header: null
       }),
     },
     GroupThread: {

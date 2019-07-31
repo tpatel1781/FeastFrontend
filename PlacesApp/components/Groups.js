@@ -51,7 +51,6 @@ class GroupsBase extends React.Component {
 	componentDidMount() {
 		this.getUserGroups();
 		this.props.navigation.setParams({ newGroup: () => this.setModalVisible(true)})
-		this.props.navigation.setParams({ swipeEnabled: false })
 	}
 
 	setModalVisible(visible) { 
