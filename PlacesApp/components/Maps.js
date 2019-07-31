@@ -9,6 +9,9 @@ import axios from 'axios';
 import { withFirebase } from './firebase';
 
 class MapsBase extends React.Component {
+    static navigationOptions = {
+        header: () => null
+    }
     state = {
         markers: [],
         displayName: this.props.firebase.getCurrentUser().displayName,

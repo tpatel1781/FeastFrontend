@@ -11,10 +11,26 @@ import Maps from './Maps'
 import Groups from './Groups'
 import GroupThread from './GroupThread'
 
-const GroupsNavigator = createStackNavigator(
+const GroupAndMapNavigator = createBottomTabNavigator(
   {
+    Maps: {
+      screen: Maps,
+      navigationOptions: {
+      }
+    },
     Groups: {
       screen: Groups,
+    },
+  },
+  {
+    initialRouteName: 'Groups'
+  }
+);
+
+const GroupsNavigator = createStackNavigator(
+  {
+    GroupAndMapNavigator: {
+      screen: GroupAndMapNavigator,
       navigationOptions: ({ navigation }) => ({
         headerLeft: <Text style={{
           fontWeight: 'bold',
@@ -28,26 +44,11 @@ const GroupsNavigator = createStackNavigator(
     },
     GroupThread: {
       screen: GroupThread,
-    } 
-  }
+    }
+  },
 );
 
-const GroupAndMapNavigator = createBottomTabNavigator(
-  {
-    Maps: {
-      screen: Maps,
-      navigationOptions: {
-      }
-    },
-    GroupsNavigator: {
-      screen: GroupsNavigator,
-      navigationOptions: ({ navigation }) => ({
-        swipeEnabled: false
-      })
-    },
-  },
- 
-);
+
 
 // create our app's navigation stack
 const Navigator = createSwitchNavigator(
@@ -55,7 +56,7 @@ const Navigator = createSwitchNavigator(
     Loading: Loading,
     SignUp: SignUp,
     Login: Login,
-    GroupAndMapNavigator: GroupAndMapNavigator
+    GroupsNavigator: GroupsNavigator
   },
   {
     initialRouteName: 'Loading'
