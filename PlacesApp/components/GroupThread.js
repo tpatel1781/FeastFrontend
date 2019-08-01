@@ -1,38 +1,66 @@
 import React from 'react'
-import { StyleSheet, Platform, Image, Text, View, ScrollView } from 'react-native'
+import { StyleSheet, Platform, Image, Text, View, ScrollView, Modal } from 'react-native'
 import axios from 'axios';
 import Constants from '../constants'
 import { Button } from 'react-native-elements';
 
 import PlaceItem from './PlaceItem';
+import PlaceSearch from './PlaceSearch';
+import { GiftedChat } from 'react-native-gifted-chat'
+import { withFirebase } from './firebase';
 
-export default class GroupThread extends React.Component {
+class GroupThreadBase extends React.Component {
 	state = {
 		group: '',
 		sortedListOfPlaces: [],
+		users: [],
+		modalVisible: false,
+		messages: [],
 	}
-    componentDidMount() {
+
+	onSend(messages = []) {
+		this.setState(previousState => ({
+			messages: GiftedChat.append(previousState.messages, messages),
+		}))
+		console.log(messages)
+		axios.post(Constants.SERVER_URL + '/addMessageToGroup', {
+			groupID: this.props.navigation.getParam('groupID', '0'),
+			message: messages
+		})
+
+	}
+
+	componentDidMount() {
 		// Store the group in a local object
 		axios.get(Constants.SERVER_URL + '/getGroup', {
 			params: {
-				groupID: this.props.navigation.getParam('groupID', '0') 
+				groupID: this.props.navigation.getParam('groupID', '0')
 			}
 		}).then(response => {
 			// Get group's list of places, then sort them by date
 			const listOfPlaces = response.data.visitedPlaces;
-			listOfPlaces.sort(function (place1, place2) { 
+			listOfPlaces.sort(function (place1, place2) {
 				var date1 = new Date(place1.visitedDate);
 				var date2 = new Date(place2.visitedDate);
 				return date1 - date2;
 			});
-			this.setState(() => ({ 
+			this.setState(() => ({
 				group: response.data,
-				sortedListOfPlaces: listOfPlaces
+				sortedListOfPlaces: listOfPlaces,
+				users: response.data.users,
+				messages: response.data.messages
 			}));
 		});
-		
-    }
-    render() {
+
+	}
+
+	setModalVisible = (visible) => {
+		this.setState({
+			modalVisible: visible,
+		})
+	}
+
+	render() {
 		const groupID = this.props.navigation.getParam('groupID', '0');
 		var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
@@ -40,30 +68,50 @@ export default class GroupThread extends React.Component {
 		this.state.sortedListOfPlaces.forEach(function (place) {
 			placeItemList.push(
 				<PlaceItem
-					placeName={place.name} 
-					key={place.googleID} 
+					placeName={place.name}
+					key={place.googleID}
 					visitedDate={(new Date(place.visitedDate)).toLocaleDateString("en-US", options)}
 				/>
 			);
 		}.bind(this));
 
-        return (
-            <View style={styles.mainContainer}>
-				<ScrollView>{placeItemList}</ScrollView>
+		return (
+			<View style={styles.mainContainer}>
+				<Modal
+					animationType="slide"
+					transparent={false}
+					visible={this.state.modalVisible}
+				>
+					<PlaceSearch users={this.state.users} modalVisible={this.setModalVisible} />
+				</Modal>
 				<Button
 					title="Search"
-					style={{marginBottom: 25}}
-					onPress={() => {}}
+					style={{ marginBottom: 25 }}
+					onPress={() =>
+						this.setModalVisible(true)
+					}
 				/>
-            </View>
-        )
-    }
+				<GiftedChat
+					messages={this.state.messages}
+					onSend={messages => this.onSend(messages)}
+					user={{
+						_id: this.props.firebase.getCurrentUser().displayName,
+						name: this.props.firebase.getCurrentUser().displayName,
+					}}
+				/>
+			{/* <ScrollView>{placeItemList}</ScrollView> */}
+				
+			</View>
+		)
+	}
 }
 const styles = StyleSheet.create({
-    mainContainer: {
-        // marginTop: 30,
-        // position: 'absolute',
-        height: '100%'
-    }
+	mainContainer: {
+		// marginTop: 30,
+		// position: 'absolute',
+		height: '100%'
+	}
 
 })
+
+export default withFirebase(GroupThreadBase)

@@ -9,6 +9,7 @@ import Login from './Login'
 import Maps from './Maps'
 import Groups from './Groups'
 import GroupThread from './GroupThread'
+import PlaceSearch from './PlaceSearch'
 
 const MapNavigator = createStackNavigator(
   {
@@ -67,6 +68,9 @@ const GroupsNavigator = createStackNavigator(
     },
     GroupThread: {
       screen: GroupThread,
+    },
+    PlaceSearch: {
+      screen: PlaceSearch,
     }
   },
 );

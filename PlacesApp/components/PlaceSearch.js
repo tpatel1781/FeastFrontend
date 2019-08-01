@@ -41,31 +41,35 @@ class PlaceSearchBase extends React.Component {
 
     generateNewPlaces() {
         axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json' +
-            '?location='+this.state.position.latitude+','+this.state.position.longitude+
+            '?location=' + this.state.position.latitude + ',' + this.state.position.longitude +
             '&radius=8000' +
             '&types=food' +
             '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4' +
             '&language=en')
     }
 
-    generateFamiliarPlaces() {
 
-    }
     render() {
-        this.state.usersList.forEach(function (user) {
-            groupItemList.push(
-                <GroupItem
-                    name={group.name}
-                    key={group._id}
-                    description={group.users.filter(name => name != this.props.firebase.getCurrentUser().displayName).join(', ')}
-                    showThread={this.showThread}
-                    groupID={group._id}
-                />
-            );
-        }.bind(this));
+        // this.state.usersList.forEach(function (user) {
+        //     groupItemList.push(
+        //         <GroupItem
+        //             name={group.name}
+        //             key={group._id}
+        //             description={group.users.filter(name => name != this.props.firebase.getCurrentUser().displayName).join(', ')}
+        //             showThread={this.showThread}
+        //             groupID={group._id}
+        //         />
+        //     );
+        // }.bind(this));
         return (
             <View>
-
+                <Text>EWOFIJWEOIFJWOIJWEOIJWEOFIWEOIFJ</Text>
+                <Button
+                    title="Close"
+                    onPress={function () {
+                        this.props.modalVisible(false)
+                    }}
+                />
             </View>
         )
     }
