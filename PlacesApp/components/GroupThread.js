@@ -3,7 +3,6 @@ import { StyleSheet, Platform, Image, Text, View, ScrollView, Modal } from 'reac
 import axios from 'axios';
 import Constants from '../constants'
 import { Button } from 'react-native-elements';
-import SocketIOClient from 'socket.io-client';
 
 import PlaceItem from './PlaceItem';
 import PlaceSearch from './PlaceSearch';
@@ -20,7 +19,6 @@ class GroupThreadBase extends React.Component {
 			modalVisible: false,
 			messages: [],
 		}
-		this.socket = SocketIOClient(Constants.SERVER_URL);
 	}
 
 	onSend(messages = []) {
@@ -32,14 +30,8 @@ class GroupThreadBase extends React.Component {
 			groupID: this.props.navigation.getParam('groupID', '0'),
 			message: messages
 		})
-		this.socket.emit('message', {message: messages, groupID: this.props.navigation.getParam('groupID', '0')})
 	}
 
-	onRecieve(messages = []) {
-		this.setState(previousState => ({
-			messages: GiftedChat.append(previousState.messages, messages),
-		}))
-	}
 
 	componentDidMount() {
 		// Store the group in a local object
@@ -61,10 +53,6 @@ class GroupThreadBase extends React.Component {
 				users: response.data.users,
 				messages: response.data.messages
 			}));
-		});
-		this.socket.on(this.props.navigation.getParam('groupID', '0'), function(data) {
-			
-			this.onRecieve(data);
 		});
 	}
 
