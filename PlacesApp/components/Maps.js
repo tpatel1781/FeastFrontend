@@ -23,6 +23,15 @@ class MapsBase extends React.Component {
         map: "",
         position: null,
     }
+    handleSignOut = () => {
+        this.props.firebase.doSignOut()
+            .then(authUser => {
+                this.props.navigation.navigate('Login');
+            })
+            .catch(error => {
+                this.setState({ error });
+            });
+    }
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
             console.log("Position: " + JSON.stringify(position))
@@ -98,7 +107,7 @@ class MapsBase extends React.Component {
                         <View style={{
                             width: 300,
                             height: 300,
-                            backgroundColor: '#fff', 
+                            backgroundColor: '#fff',
                             padding: 20
                         }}>
                             <Text>{this.state.modalLocation}</Text>
@@ -192,7 +201,7 @@ class MapsBase extends React.Component {
 
                 <Button
                     title="Sign Out"
-                    onPress={this.props.handleSignOut}
+                    onPress={this.handleSignOut}
                 />
             </View >
         )
