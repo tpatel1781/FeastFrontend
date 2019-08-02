@@ -3,6 +3,7 @@ import { StyleSheet, Platform, Image, Text, View, ScrollView, Modal } from 'reac
 import axios from 'axios';
 import Constants from '../constants'
 import { Button } from 'react-native-elements';
+import SocketIOClient from 'socket.io-client';
 
 import PlaceItem from './PlaceItem';
 import PlaceSearch from './PlaceSearch';
@@ -27,7 +28,12 @@ class GroupThreadBase extends React.Component {
 			groupID: this.props.navigation.getParam('groupID', '0'),
 			message: messages
 		})
+	}
 
+	onRecieve(messages = []) {
+		this.setState(previousState => ({
+			messages: GiftedChat.append(previousState.messages, messages),
+		}))
 	}
 
 	componentDidMount() {
@@ -51,7 +57,11 @@ class GroupThreadBase extends React.Component {
 				messages: response.data.messages
 			}));
 		});
-
+		this.socket = SocketIOClient(Constants.SERVER_URL);
+		this.socket.on(this.props.navigation.getParam('groupID', '0'), function(data) {
+			console.log("Recieved")
+			this.onRecieve(data);
+		});
 	}
 
 	setModalVisible = (visible) => {
