@@ -11,12 +11,16 @@ import { GiftedChat } from 'react-native-gifted-chat'
 import { withFirebase } from './firebase';
 
 class GroupThreadBase extends React.Component {
-	state = {
-		group: '',
-		sortedListOfPlaces: [],
-		users: [],
-		modalVisible: false,
-		messages: [],
+	constructor(props) {
+		super(props)
+		this.state = {
+			group: '',
+			sortedListOfPlaces: [],
+			users: [],
+			modalVisible: false,
+			messages: [],
+		}
+		this.socket = SocketIOClient(Constants.SERVER_URL);
 	}
 
 	onSend(messages = []) {
@@ -28,6 +32,7 @@ class GroupThreadBase extends React.Component {
 			groupID: this.props.navigation.getParam('groupID', '0'),
 			message: messages
 		})
+		this.socket.emit('message', {message: messages, groupID: this.props.navigation.getParam('groupID', '0')})
 	}
 
 	onRecieve(messages = []) {
@@ -57,9 +62,8 @@ class GroupThreadBase extends React.Component {
 				messages: response.data.messages
 			}));
 		});
-		this.socket = SocketIOClient(Constants.SERVER_URL);
 		this.socket.on(this.props.navigation.getParam('groupID', '0'), function(data) {
-			console.log("Recieved")
+			
 			this.onRecieve(data);
 		});
 	}
