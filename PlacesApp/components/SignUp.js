@@ -20,7 +20,7 @@ class SignUp extends React.Component {
             userCredentials.user.updateProfile({
               displayName: this.state.username
             }).then(userCredentials => {
-              this.props.navigation.navigate("Main")
+              this.props.navigation.navigate("Groups")
             })
           }
         })
