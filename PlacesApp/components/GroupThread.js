@@ -5,7 +5,6 @@ import Constants from '../constants'
 import { Button } from 'react-native-elements';
 
 import PlaceItem from './PlaceItem';
-import PlaceSearch from './ThreadPoll';
 import { GiftedChat } from 'react-native-gifted-chat'
 import { withFirebase } from './firebase';
 
@@ -54,9 +53,10 @@ class GroupThreadBase extends React.Component {
 				messages: response.data.messages
 			}));
 		});
+		this.props.navigation.setParams({ openSettings: () => this.setSettingsModalVisible(true)})
 	}
 
-	setModalVisible = (visible) => {
+	setSettingsModalVisible = (visible) => {
 		this.setState({
 			modalVisible: visible,
 		})
@@ -84,15 +84,8 @@ class GroupThreadBase extends React.Component {
 					transparent={false}
 					visible={this.state.modalVisible}
 				>
-					<PlaceSearch users={this.state.users} modalVisible={this.setModalVisible} />
+					<Text>HELLO</Text>
 				</Modal>
-				<Button
-					title="Search"
-					style={{ marginBottom: 25 }}
-					onPress={() =>
-						this.setModalVisible(true)
-					}
-				/>
 				<GiftedChat
 					messages={this.state.messages}
 					onSend={messages => this.onSend(messages)}

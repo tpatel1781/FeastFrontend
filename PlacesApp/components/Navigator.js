@@ -62,9 +62,9 @@ const ThreadNavigator = createMaterialTopTabNavigator(
   {
     GroupThread: {
       screen: GroupThread,
-      navigationOptions: {
+      navigationOptions: ({ navigation }) => ({
         tabBarVisible: false,
-      }
+      }),
     },
     ThreadPoll: {
       screen: ThreadPoll,
@@ -88,7 +88,12 @@ const GroupsNavigator = createStackNavigator(
       }),
     },
     ThreadNavigator: {
-      screen: ThreadNavigator
+      screen: ThreadNavigator,
+      navigationOptions: ({ navigation }) => ({
+        headerRight: <Button
+          onPress={navigation.getParam('openSettings')}
+          title="Settings" />
+      }),
     }
   },
 )
