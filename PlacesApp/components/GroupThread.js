@@ -5,7 +5,7 @@ import Constants from '../constants'
 import { Button } from 'react-native-elements';
 
 import PlaceItem from './PlaceItem';
-import PlaceSearch from './PlaceSearch';
+import PlaceSearch from './ThreadPoll';
 import { GiftedChat } from 'react-native-gifted-chat'
 import { withFirebase } from './firebase';
 

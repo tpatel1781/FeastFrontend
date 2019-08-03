@@ -9,7 +9,7 @@ import Login from './Login'
 import Maps from './Maps'
 import Groups from './Groups'
 import GroupThread from './GroupThread'
-import PlaceSearch from './PlaceSearch'
+import ThreadPoll from './ThreadPoll'
 
 const MapNavigator = createStackNavigator(
   {
@@ -56,7 +56,28 @@ const GroupAndMapNavigator = createBottomTabNavigator(
   {
     initialRouteName: 'Groups'
   }
-);
+)
+
+const ThreadNavigator = createMaterialTopTabNavigator(
+  {
+    GroupThread: {
+      screen: GroupThread,
+      navigationOptions: {
+        tabBarVisible: false,
+      }
+    },
+    ThreadPoll: {
+      screen: ThreadPoll,
+      navigationOptions: {
+        tabBarVisible: false,
+      }
+    }
+  },
+  {
+    initialRouteName: 'GroupThread',
+    swipeEnabled: true,
+  }
+)
 
 const GroupsNavigator = createStackNavigator(
   {
@@ -66,16 +87,11 @@ const GroupsNavigator = createStackNavigator(
         header: null
       }),
     },
-    GroupThread: {
-      screen: GroupThread,
-    },
-    PlaceSearch: {
-      screen: PlaceSearch,
+    ThreadNavigator: {
+      screen: ThreadNavigator
     }
   },
-);
-
-
+)
 
 // create our app's navigation stack
 const Navigator = createSwitchNavigator(

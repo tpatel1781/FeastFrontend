@@ -6,7 +6,7 @@ import Constants from '../constants'
 
 import { withFirebase } from './firebase';
 
-class PlaceSearchBase extends React.Component {
+class ThreadPollBase extends React.Component {
     state = {
         usersList: [],
         position: {
@@ -15,18 +15,6 @@ class PlaceSearchBase extends React.Component {
         }
     }
     componentDidMount() {
-        for (const username of this.props.users) {
-            axios.get(Constants.SERVER_URL + "/getUser", {
-                params: {
-                    username: username
-                }
-                // Pass the username from Firebase to make the getUser call
-            }).then(response => {
-                this.setState((prevState) => ({
-                    usersList: prevState.usersList.concat([response.data])
-                }));
-            });
-        }
         navigator.geolocation.getCurrentPosition((position) => {
             console.log("Position: " + JSON.stringify(position))
             this.setState({ position: { longitude: position.coords.longitude, latitude: position.coords.latitude } });
@@ -64,15 +52,10 @@ class PlaceSearchBase extends React.Component {
         return (
             <View>
                 <Text>EWOFIJWEOIFJWOIJWEOIJWEOFIWEOIFJ</Text>
-                <Button
-                    title="Close"
-                    onPress={function () {
-                        this.props.modalVisible(false)
-                    }}
-                />
+               
             </View>
         )
     }
 }
 
-export default withFirebase(PlaceSearchBase)
+export default withFirebase(ThreadPollBase)
