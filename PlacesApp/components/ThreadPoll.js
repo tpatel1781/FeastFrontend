@@ -35,11 +35,13 @@ class ThreadPollBase extends React.Component {
                 groupID: this.props.navigation.getParam('groupID', '0')
             }
         }).then(response => {
+            console.log(response.status)
             this.setState(() => ({
                 group: response.data,
                 isPollOpen: response.data.isPollOpen
             }));
         });
+        this.generateNewPlaces();
     }
 
     generateNewPlaces() {
@@ -48,7 +50,9 @@ class ThreadPollBase extends React.Component {
             '&radius=8000' +
             '&types=food' +
             '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4' +
-            '&language=en')
+            '&language=en').then(response => {
+                console.log("PLACES API: " + JSON.stringify(response))
+            })
     }
 
     startPoll() {
@@ -68,9 +72,7 @@ class ThreadPollBase extends React.Component {
     render() {
         return (
             <View>
-                {this.state.isPollOpen ? (<ActivePoll stopPoll={() => this.stopPoll()}/>) : (<InactivePoll startPoll={() => this.startPoll()}/>)}
-                <Text>EWOFIJWEOIFJWOIJWEOIJWEOFIWEOIFJ</Text>
-                
+                {this.state.isPollOpen ? (<ActivePoll stopPoll={() => this.stopPoll()}/>) : (<InactivePoll startPoll={() => this.startPoll()}/>)}                
             </View>
         )
     }

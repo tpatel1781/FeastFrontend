@@ -24,7 +24,7 @@ class GroupThreadBase extends React.Component {
 		this.setState(previousState => ({
 			messages: GiftedChat.append(previousState.messages, messages),
 		}))
-		console.log(messages)
+		console.log(this.props.navigation.getParam('groupID', '0'))
 		axios.post(Constants.SERVER_URL + '/addMessageToGroup', {
 			groupID: this.props.navigation.getParam('groupID', '0'),
 			message: messages
