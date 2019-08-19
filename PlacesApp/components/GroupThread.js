@@ -33,6 +33,7 @@ class GroupThreadBase extends React.Component {
 
 
 	componentDidMount() {
+		this.props.navigation.setParams({ openSettings: () => this.setSettingsModalVisible(true)})
 		// Store the group in a local object
 		axios.get(Constants.SERVER_URL + '/getGroup', {
 			params: {
@@ -53,7 +54,6 @@ class GroupThreadBase extends React.Component {
 				messages: response.data.messages
 			}));
 		});
-		this.props.navigation.setParams({ openSettings: () => this.setSettingsModalVisible(true)})
 	}
 
 	setSettingsModalVisible = (visible) => {
