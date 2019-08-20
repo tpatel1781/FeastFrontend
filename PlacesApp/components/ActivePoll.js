@@ -8,6 +8,13 @@ import { withFirebase } from './firebase';
 import PollCard from './PollCard';
 
 class ActivePollBase extends React.Component {
+    state = {
+        places: ''
+    }
+    componentDidMount() {
+    
+    }
+
     render() {
         return (
             <View>

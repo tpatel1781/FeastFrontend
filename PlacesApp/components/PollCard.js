@@ -5,7 +5,6 @@ import axios from 'axios'
 import Constants from '../constants'
 
 import { withFirebase } from './firebase';
-import { HitTestResultTypes } from 'expo/build/AR';
 
 class PollCardBase extends React.Component {
     render() {
