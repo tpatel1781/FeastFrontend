@@ -9,15 +9,13 @@ import PollCard from './PollCard';
 
 class ActivePollBase extends React.Component {
     state = {
-        places: '',
+        places: [],
         position: '',
     }
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
-            console.log("Position: " + JSON.stringify(position))
             this.setState({ position: { longitude: position.coords.longitude, latitude: position.coords.latitude } });
             this.generateNewPlaces();
-            console.log("After generate")
         }, (error) => {
             console.log(JSON.stringify(error))
         }, {
@@ -35,9 +33,12 @@ class ActivePollBase extends React.Component {
             '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4' +
             '&language=en' + 
             '&fields='+'name,rating,user_ratings_total,price_level,geometry,opening_hours').then(response => {
-                console.log("PLACES API: " + JSON.stringify(response))
+				var tempPlaces = []
+				response.data.results.forEach(function (place) {
+					tempPlaces.push(place);
+				})
                 this.setState({
-
+					places: tempPlaces
                 });
             })
     }
