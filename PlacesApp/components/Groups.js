@@ -82,7 +82,8 @@ class GroupsBase extends React.Component {
 
 	//TODO: Fill in what info is needed)
 	showThread = (groupID) => {
-		this.props.navigation.navigate('GroupThread', {groupID: groupID});
+		this.props.navigation.setParams({groupID: groupID})
+		this.props.navigation.navigate('GroupThread');
 	}
 
 
