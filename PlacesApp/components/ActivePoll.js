@@ -34,9 +34,9 @@ class ActivePollBase extends React.Component {
             '&language=en' + 
             '&fields='+'name,rating,user_ratings_total,price_level,geometry,opening_hours').then(response => {
 				var tempPlaces = []
-				response.data.results.forEach(function (place) {
-					tempPlaces.push(place);
-				})
+				for (i=0; i<5; i++) {
+					tempPlaces.push(response.data.results[i]);
+				}
                 this.setState({
 					places: tempPlaces
                 });
