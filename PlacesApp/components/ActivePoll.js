@@ -5,6 +5,7 @@ import axios from 'axios'
 import Constants from '../constants'
 
 import { withFirebase } from './firebase';
+import PollCard from './PollCard';
 
 class ActivePollBase extends React.Component {
     render() {
@@ -14,6 +15,15 @@ class ActivePollBase extends React.Component {
                     title="Stop Poll"
                     onPress={this.props.stopPoll}
                 />
+
+				<PollCard
+					name={'Chipotle'}
+					rating={4.0}
+					foodType={'Mexican'}
+					price={'$$'}
+					distance={'1.2 miles'}
+					openStatus={'Open'}
+				/>
             </View>
         )
     }
