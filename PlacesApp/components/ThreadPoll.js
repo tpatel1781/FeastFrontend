@@ -19,7 +19,7 @@ class ThreadPollBase extends React.Component {
         isPollOpen: false,
     }
     componentDidMount() {
-            axios.get(Constants.SERVER_URL + '/getGroup', {
+        axios.get(Constants.SERVER_URL + '/getGroup', {
             params: {
                 groupID: this.props.navigation.getParam('groupID', '0')
             }
@@ -31,20 +31,34 @@ class ThreadPollBase extends React.Component {
         });
     }
     startPoll() {
-        this.setState({
-            isPollOpen: true,
+        axios.post(Constants.SERVER_URL + '/updatePoll',
+            {
+                groupID: this.props.navigation.getParam('groupID', '0'),
+                pollState: true
+            }
+        ).then(response => {
+            this.setState({
+                isPollOpen: true,
+            })
         })
     }
 
     stopPoll() {
-        this.setState({
-            isPollOpen: false,
+        axios.post(Constants.SERVER_URL + '/updatePoll',
+            {
+                groupID: this.props.navigation.getParam('groupID', '0'),
+                pollState: false
+            }
+        ).then(response => {
+            this.setState({
+                isPollOpen: false,
+            })
         })
     }
     render() {
         return (
             <View>
-                {this.state.isPollOpen ? (<ActivePoll stopPoll={() => this.stopPoll()}/>) : (<InactivePoll startPoll={() => this.startPoll()}/>)}                
+                {this.state.isPollOpen ? (<ActivePoll stopPoll={() => this.stopPoll()} />) : (<InactivePoll startPoll={() => this.startPoll()} />)}
             </View>
         )
     }
