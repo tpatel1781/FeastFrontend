@@ -13,7 +13,6 @@ class PollCardBase extends React.Component {
                 <Text style={styles.nameHeader}>{this.props.name}</Text>
 				<Text>{this.props.rating}</Text>
 				<View style={styles.row}>
-					<Text style={styles.rowItem}>{this.props.foodType}</Text>
 					<Text style={styles.rowItem}>{this.props.price}</Text>
 					<Text style={styles.rowItem}>{this.props.distance}</Text>
 				</View>

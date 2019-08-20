@@ -16,6 +16,20 @@ class ActivePollBase extends React.Component {
     }
 
     render() {
+		var placeItemList = []
+		this.state.places.forEach(function (place) {
+			placeItemList.push(
+				<PollCard
+					name={place.name}
+					key={place.id}
+					rating={place.rating + ' (' + place.user_ratings_total + ')'}
+					distance={"FIX THIS"}
+					openStatus={place.opening_hours.open_now}
+					price={place.price_level}
+				/>
+			);
+		}.bind(this));
+
         return (
             <View>
                 <Button
@@ -23,14 +37,7 @@ class ActivePollBase extends React.Component {
                     onPress={this.props.stopPoll}
                 />
 
-				<PollCard
-					name={'Chipotle'}
-					rating={4.0}
-					foodType={'Mexican'}
-					price={'$$'}
-					distance={'1.2 miles'}
-					openStatus={'Open'}
-				/>
+				<ScrollView>{placeItemList}</ScrollView>
             </View>
         )
     }
