@@ -19,37 +19,28 @@ class ThreadPollBase extends React.Component {
         isPollOpen: false,
     }
     componentDidMount() {
-        
-        console.log('groupId in poll:' + this.props.navigation.getParam('groupID', '0'))
-        axios.get(Constants.SERVER_URL + '/getGroup', {
+            axios.get(Constants.SERVER_URL + '/getGroup', {
             params: {
                 groupID: this.props.navigation.getParam('groupID', '0')
             }
         }).then(response => {
-            console.log(response.status)
             this.setState(() => ({
                 group: response.data,
                 isPollOpen: response.data.isPollOpen
             }));
         });
     }
-
-    
-
     startPoll() {
-        console.log("Hello")
         this.setState({
             isPollOpen: true,
         })
     }
 
     stopPoll() {
-        console.log("Stoped")
         this.setState({
             isPollOpen: false,
         })
     }
-
     render() {
         return (
             <View>

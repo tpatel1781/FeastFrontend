@@ -34,7 +34,6 @@ class MapsBase extends React.Component {
     }
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
-            console.log("Position: " + JSON.stringify(position))
             this.setState({ position: { longitude: position.coords.longitude, latitude: position.coords.latitude, latitudeDelta: 0.001, longitudeDelta: 0.001 } });
         }, (error) => {
             console.log(JSON.stringify(error))
@@ -52,17 +51,14 @@ class MapsBase extends React.Component {
         this.setState({
             locationRating: rating,
         })
-        console.log(this.state.locationRating)
     }
     submitRating() {
-        console.log(this.state.displayName + " " + this.state.modalLocation + " " + this.state.googleID + " " + this.state.locationRating)
         axios.post(Constants.SERVER_URL + "/addPlace", {
             username: this.state.displayName,
             name: this.state.modalLocation,
             googleID: this.state.googleID,
             rating: this.state.locationRating,
         }).then(response => {
-            console.log(response);
             this.setModalVisible(false)
         })
     }

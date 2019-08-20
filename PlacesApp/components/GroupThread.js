@@ -32,7 +32,6 @@ class GroupThreadBase extends React.Component {
 
 
 	componentDidMount() {
-		console.log("grOUPid:" + this.props.navigation.getParam('groupID', '0'))
 		this.props.navigation.setParams({ openSettings: () => this.setSettingsModalVisible(true)})
 		// Store the group in a local object
 		axios.get(Constants.SERVER_URL + '/getGroup', {
