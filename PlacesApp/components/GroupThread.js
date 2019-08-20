@@ -63,7 +63,6 @@ class GroupThreadBase extends React.Component {
 	}
 
 	render() {
-		const groupID = this.props.navigation.getParam('groupID', '0');
 		var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
 		var placeItemList = [];

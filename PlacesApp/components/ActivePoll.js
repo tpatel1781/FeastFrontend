@@ -9,12 +9,38 @@ import PollCard from './PollCard';
 
 class ActivePollBase extends React.Component {
     state = {
-        places: ''
+        places: '',
+        position: '',
     }
     componentDidMount() {
-    
+        navigator.geolocation.getCurrentPosition((position) => {
+            console.log("Position: " + JSON.stringify(position))
+            this.setState({ position: { longitude: position.coords.longitude, latitude: position.coords.latitude } });
+            this.generateNewPlaces();
+            console.log("After generate")
+        }, (error) => {
+            console.log(JSON.stringify(error))
+        }, {
+                enableHighAccuracy: true,
+                timeout: 20000,
+                maximumAge: 1000
+            });
     }
 
+    generateNewPlaces() {
+        axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json' +
+            '?location=' + this.state.position.latitude + ',' + this.state.position.longitude +
+            '&radius=8000' +
+            '&types=restaurant' +
+            '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4' +
+            '&language=en' + 
+            '&fields='+'name,rating,user_ratings_total,price_level,geometry,opening_hours').then(response => {
+                console.log("PLACES API: " + JSON.stringify(response))
+                this.setState({
+
+                });
+            })
+    }
     render() {
 		var placeItemList = []
 		this.state.places.forEach(function (place) {
