@@ -65,7 +65,7 @@ class ThreadPollBase extends React.Component {
             this.setState({ position: { longitude: position.coords.longitude, latitude: position.coords.latitude } });
             this.generateNewPlaces();
         }, (error) => {
-            console.log(JSON.stringify(error))
+            console.log("Position Error: " + JSON.stringify(error))
         }, {
                 enableHighAccuracy: true,
                 timeout: 20000,
@@ -84,7 +84,9 @@ class ThreadPollBase extends React.Component {
             '&fields=' + 'name,rating,user_ratings_total,price_level,geometry,opening_hours').then(response => {
                 var tempPlaces = []
                 for (i = 0; i < 5; i++) {
-                    tempPlaces.push(response.data.results[i]);
+                    if(response.data.results[i]) {
+                        tempPlaces.push(response.data.results[i]);
+                    }
                 }
                 axios.post(Constants.SERVER_URL + '/addPollPlaces',
                     {

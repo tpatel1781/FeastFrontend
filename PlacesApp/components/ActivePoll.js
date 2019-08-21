@@ -11,7 +11,24 @@ class ActivePollBase extends React.Component {
     state = {
     }
     componentDidMount() {
-        
+        position: {
+            longitude: '',
+            latitude: '',
+        },
+    }
+
+    getPosition() {
+        navigator.geolocation.getCurrentPosition((position) => {
+            this.setState({ position: { longitude: position.coords.longitude, latitude: position.coords.latitude } });
+            this.generateNewPlaces();
+        }, (error) => {
+            console.log("Position Error: " + JSON.stringify(error))
+        }, {
+                enableHighAccuracy: true,
+                timeout: 20000,
+                maximumAge: 1000
+            }
+        );
     }
 
 	calculateDistance(lat1, lon1, lat2, lon2) {
