@@ -55,6 +55,7 @@ class ThreadPollBase extends React.Component {
         ).then(response => {
             this.setState({
                 isPollOpen: false,
+                places: [],
             })
         })
 
@@ -107,6 +108,7 @@ class ThreadPollBase extends React.Component {
                         pollPlaces={this.state.pollPlaces}
                         position={this.state.position}
                         stopPoll={() => this.stopPoll()}
+                        groupID={this.props.navigation.getParam('groupID', '0')}
                     />) :
                     (<InactivePoll
                         startPoll={() => this.startPoll()}
