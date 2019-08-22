@@ -63,7 +63,8 @@ class ActivePollBase extends React.Component {
                         place.geometry.location.lat, place.geometry.location.lng)}
                     openStatus={place.opening_hours.open_now}
                     price={place.price_level}
-                    index={index}
+					index={index}
+					id={place.id}
                     groupID={this.props.groupID}
                     votes={pollPlace.votes}
                 />

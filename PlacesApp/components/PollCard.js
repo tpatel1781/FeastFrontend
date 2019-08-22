@@ -7,6 +7,10 @@ import Constants from '../constants'
 import { withFirebase } from './firebase';
 
 class PollCardBase extends React.Component {
+	state = {
+		isUpvoteDisabled: false,
+		isDownvoteDisabled: false,
+	}
     render() {
         return (
             <View>
@@ -17,7 +21,37 @@ class PollCardBase extends React.Component {
 					<Text style={styles.rowItem}>{this.props.distance}</Text>
 				</View>
 				<Text style={styles.openStatus}>{this.props.openStatus}</Text>
-
+				<Button
+					onPress={() => {
+						axios.post(Constants.SERVER_URL + '/votePollPlace', {
+							groupID: this.props.groupID,
+							isUpvote: true,
+							id: this.props.id
+						}).then(response => {
+							this.setState({ isUpvoteDisabled: true })
+						}).catch(error => {
+							console.log("Upvote error: " + error)
+						});
+					}}
+					disabled = {this.state.isUpvoteDisabled}
+					title="Upvote"
+				/>
+				<Button
+					onPress={() => {
+						axios.post(Constants.SERVER_URL + '/votePollPlace', {
+							groupID: this.props.groupID,
+							isUpvote: false,
+							id: this.props.id
+						}).then(response => {
+							this.setState({ isDownvoteDisabled: true })
+						}).catch(error => {
+							console.log("Downvote error: " + error)
+						});
+					}}
+					disabled = {this.state.isDownvoteDisabled}
+					title="Downvote"
+				/>
+				<Text>{"Votes: " + this.props.votes}</Text>
             </View>
         )
     }
