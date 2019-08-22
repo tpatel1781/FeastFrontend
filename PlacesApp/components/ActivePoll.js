@@ -65,6 +65,7 @@ class ActivePollBase extends React.Component {
                     price={place.price_level}
                     index={index}
                     groupID={this.props.groupID}
+                    votes={this.pollPlace.votes}
                 />
             );
         }.bind(this));
