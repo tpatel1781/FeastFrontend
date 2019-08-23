@@ -73,7 +73,7 @@ class PollCardBase extends React.Component {
 					buttons={buttons}
 					containerStyle={{ height: 40 }}
 				/>
-				<Text>{"Votes: " + this.props.votes}</Text>
+				<Text>{"Votes: " + this.props.votes + '\n'}</Text>
 			</View>
 		)
 	}
