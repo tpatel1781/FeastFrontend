@@ -76,28 +76,39 @@ class ThreadPollBase extends React.Component {
     }
 
     generateNewPlaces() {
-        axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json' +
-            '?location=' + this.state.position.latitude + ',' + this.state.position.longitude +
-            '&radius=8000' +
-            '&types=restaurant' +
-            '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4' +
-            '&language=en' +
-            '&fields=' + 'name,rating,user_ratings_total,price_level,geometry,opening_hours').then(response => {
-                var tempPlaces = []
-                for (i = 0; i < 5; i++) {
-                    if(response.data.results[i]) {
-                        tempPlaces.push(response.data.results[i]);
-                    }
+        const request = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json' +
+        '?location=' + this.state.position.latitude + ',' + this.state.position.longitude +
+        '&radius=8000' +
+        '&type=restaurant' +
+        '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4' +
+        '&language=en' +
+        '&fields=' + 'name,rating,user_ratings_total,price_level,geometry,opening_hours'
+
+        // const request =
+        //     'https://maps.googleapis.com/maps/api/place/findplacefromtext/json' +
+        //     '?input=' + 'Restaurants' +
+        //     '&inputtype=textquery' + 
+        //     '&fields=' + 'name,rating,user_ratings_total,price_level,geometry,opening_hours' +
+        //     '&locationbias=' + 'point:' + this.state.position.latitude + ',' + this.state.position.longitude +
+        //     '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4'
+
+        axios.get(request).then(response => {
+            console.log(response.data.results)
+            var tempPlaces = []
+            for (i = 0; i < 4; i++) {
+                if (response.data.results[i]) {
+                    tempPlaces.push(response.data.results[i]);
                 }
-                axios.post(Constants.SERVER_URL + '/addPollPlaces',
-                    {
-                        groupID: this.props.navigation.getParam('groupID', '0'),
-                        places: tempPlaces
-                    }
-                ).then(response => {
-                    
-                })
-            });
+            }
+            axios.post(Constants.SERVER_URL + '/addPollPlaces',
+                {
+                    groupID: this.props.navigation.getParam('groupID', '0'),
+                    places: tempPlaces
+                }
+            ).then(response => {
+
+            })
+        });
     }
 
     render() {
