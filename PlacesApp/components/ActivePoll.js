@@ -12,7 +12,8 @@ class ActivePollBase extends React.Component {
         position: {
             longitude: '',
             latitude: '',
-        },
+		},
+		displayName: this.props.firebase.getCurrentUser().displayName,
     }
     componentDidMount() {
         this.getPosition();
@@ -53,6 +54,8 @@ class ActivePollBase extends React.Component {
     render() {
         var placeItemList = []
         this.props.pollPlaces.forEach(function (pollPlace, index) {
+			const isUpvoted = pollPlace.upvotes.includes(this.state.displayName);
+			const isDownvoted = pollPlace.downvotes.includes(this.state.displayName);
             const place = pollPlace.place
             placeItemList.push(
                 <PollCard
@@ -66,7 +69,10 @@ class ActivePollBase extends React.Component {
 					index={index}
 					id={place.id}
                     groupID={this.props.groupID}
-                    votes={pollPlace.votes}
+					votes={pollPlace.upvotes.length - pollPlace.downvotes.length}
+					displayName={this.state.displayName}
+					isUpvoted={isUpvoted}
+					isDownvoted={isDownvoted}
                 />
             );
         }.bind(this));
