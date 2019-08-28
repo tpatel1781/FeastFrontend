@@ -76,28 +76,40 @@ class ThreadPollBase extends React.Component {
     }
 
     generateNewPlaces() {
-        const request = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json' +
-        '?location=' + this.state.position.latitude + ',' + this.state.position.longitude +
-        '&radius=8000' +
-        '&type=restaurant' +
-        '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4' +
-        '&language=en' +
-        '&fields=' + 'name,rating,user_ratings_total,price_level,geometry,opening_hours'
+        //GOOGLE PLACES API REQUEST
+        // const request = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json' +
+        //     '?location=' + this.state.position.latitude + ',' + this.state.position.longitude +
+        //     '&radius=8000' +
+        //     '&type=restaurant' +
+        //     '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4' +
+        //     '&language=en' +
+        //     '&fields=' + 'name,rating,user_ratings_total,price_level,geometry,opening_hours'
 
-        // const request =
-        //     'https://maps.googleapis.com/maps/api/place/findplacefromtext/json' +
-        //     '?input=' + 'Restaurants' +
-        //     '&inputtype=textquery' + 
-        //     '&fields=' + 'name,rating,user_ratings_total,price_level,geometry,opening_hours' +
-        //     '&locationbias=' + 'point:' + this.state.position.latitude + ',' + this.state.position.longitude +
-        //     '&key=AIzaSyBzD1vJ3QqK6hX-Y9j9Z_NVqNyycC3Aqd4'
+
+        const request = 'https://api.foursquare.com/v2/venues/search' +
+            '?client_id=MBXHIYJNEWTF1FWF215AJHKC5LF4JSXNRLXEJNZE4AFNTITJ' +
+            '&client_secret=W1OUYNPFQIC4ZSP4M04AVTLJEK3EAWCMKJB01VKU0XVGSRAK' +
+            '&ll=' + this.state.position.latitude + ',' + this.state.position.longitude +
+            '&intent=checkin' +
+            '&categoryId=4d4b7105d754a06374d81259' +
+            '&radius=800' +
+            '&v=20181212'
+
+        const venueRequestUrl = 'https://api.foursquare.com/v2/venues/'
+
+        const auth = '?client_id=MBXHIYJNEWTF1FWF215AJHKC5LF4JSXNRLXEJNZE4AFNTITJ' +
+        '&client_secret=W1OUYNPFQIC4ZSP4M04AVTLJEK3EAWCMKJB01VKU0XVGSRAK' +
+        '&v=20181212'
 
         axios.get(request).then(response => {
-            console.log(response.data.results)
+            //console.log(JSON.stringify(response.data.response.venues))
             var tempPlaces = []
             for (i = 0; i < 4; i++) {
-                if (response.data.results[i]) {
-                    tempPlaces.push(response.data.results[i]);
+                if (response.data.response.venues[i]) {
+                    console.log(venueRequestUrl+response.data.response.venues[i].id + auth)
+                    axios.get(venueRequestUrl+response.data.response.venues[i].id + auth).then(response => {
+                        tempPlaces.push(response.data.response.venue)
+                    })
                 }
             }
             axios.post(Constants.SERVER_URL + '/addPollPlaces',
@@ -108,6 +120,8 @@ class ThreadPollBase extends React.Component {
             ).then(response => {
 
             })
+        }).catch(error => {
+            console.log(error)
         });
     }
 
