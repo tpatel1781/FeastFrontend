@@ -106,17 +106,31 @@ class ThreadPollBase extends React.Component {
         console.log("GROUPID COPY:" + groupIDcopy)
         axios.get(request).then(async function(response) {
             //console.log(JSON.stringify(response.data.response.venues))
-            var tempPlaces = []
-            for (i = 0; i < 4; i++) {
+            var unfilteredPlaces = []
+            for (i = 0; i < 20; i++) {
                 if (response.data.response.venues[i]) {
                     await axios.get(venueRequestUrl + response.data.response.venues[i].id + auth).then(response => {
-                        tempPlaces.push(response.data.response.venue)
+                        unfilteredPlaces.push(response.data.response.venue)
                         console.log("HHH")
                     })
                 }
             }
 
-            console.log(this.state.groupID)
+            unfilteredPlaces.sort(function(a, b) {
+                return b.rating - a.rating;
+            })
+            var tempPlaces = []
+            for (i = 0; i < 20; i++) {
+                if(unfilteredPlaces[i].attributes.groups[0].items[0].priceTier < 3) {
+                    tempPlaces.push(unfilteredPlaces[i])
+                }
+                if(tempPlaces.length >= 4) {
+                    break;
+                }
+            };
+
+            console.log(tempPlaces)
+
             console.log("GROUPID COPY 2:" + groupIDcopy)
             axios.post(Constants.SERVER_URL + '/addPollPlaces',
                 {
@@ -128,7 +142,7 @@ class ThreadPollBase extends React.Component {
             })
         }).catch(error => {
             console.log("FOURSQUARE REQUEST FAILED:" + error)
-        }).bind(this);
+        })
     }
 
     render() {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Platform, Image, Text, View, Modal, ScrollView } from 'react-native'
+import { StyleSheet, Platform, Image, Text, View, Modal, ScrollView, Linking } from 'react-native'
 import { ButtonGroup } from 'react-native-elements';
 import axios from 'axios'
 import Constants from '../constants'
