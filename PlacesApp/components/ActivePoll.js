@@ -59,16 +59,17 @@ class ActivePollBase extends React.Component {
             const place = pollPlace.place
             placeItemList.push(
                 <PollCard
-                    name={place.venue.name}
+                    name={place.name}
                     key={place.id}
                     rating={place.rating}
                     distance={this.calculateDistance(this.state.position.latitude, this.state.position.longitude,
                         place.location.lat, place.location.lng)}
 					openStatus={place.hours.status}
-					category={places.categories.shortName}
-                    price={place.attributes.price_level} // Not sure if this is right
+					category={places.categories[0].shortName}
+					menu={places.menu.mobileUrls}
+                    price={place.attributes.groups[0].summary} // Not sure if this is right
 					index={index}
-					id={place.venue.id}
+					id={place.id}
                     groupID={this.props.groupID}
 					votes={pollPlace.upvotes.length - pollPlace.downvotes.length}
 					displayName={this.state.displayName}

@@ -68,6 +68,7 @@ class PollCardBase extends React.Component {
 				</View>
 				<Text style={styles.openStatus}>{this.props.openStatus}</Text>
 				<Text>{this.props.category}</Text>
+				<Text>{this.props.menu}</Text>
 				<ButtonGroup
 					onPress={this.updateIndex}
 					selectedIndex={selectedIndex}
