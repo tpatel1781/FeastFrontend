@@ -18,11 +18,13 @@ class ThreadPollBase extends React.Component {
         pollPlaces: [],
         group: "",
         isPollOpen: false,
+        groupID: this.props.navigation.getParam('groupID')
     }
     componentDidMount() {
+        console.log(this.state.groupID)
         axios.get(Constants.SERVER_URL + '/getGroup', {
             params: {
-                groupID: this.props.navigation.getParam('groupID', '0')
+                groupID: this.state.groupID
             }
         }).then(response => {
             this.setState(() => ({
@@ -35,7 +37,7 @@ class ThreadPollBase extends React.Component {
     startPoll() {
         axios.post(Constants.SERVER_URL + '/updatePoll',
             {
-                groupID: this.props.navigation.getParam('groupID', '0'),
+                groupID: this.state.groupID,
                 pollState: true
             }
         ).then(response => {
@@ -49,7 +51,7 @@ class ThreadPollBase extends React.Component {
     stopPoll() {
         axios.post(Constants.SERVER_URL + '/updatePoll',
             {
-                groupID: this.props.navigation.getParam('groupID', '0'),
+                groupID: this.state.groupID,
                 pollState: false
             }
         ).then(response => {
@@ -98,31 +100,35 @@ class ThreadPollBase extends React.Component {
         const venueRequestUrl = 'https://api.foursquare.com/v2/venues/'
 
         const auth = '?client_id=MBXHIYJNEWTF1FWF215AJHKC5LF4JSXNRLXEJNZE4AFNTITJ' +
-        '&client_secret=W1OUYNPFQIC4ZSP4M04AVTLJEK3EAWCMKJB01VKU0XVGSRAK' +
-        '&v=20181212'
-
-        axios.get(request).then(response => {
+            '&client_secret=W1OUYNPFQIC4ZSP4M04AVTLJEK3EAWCMKJB01VKU0XVGSRAK' +
+            '&v=20181212'
+        const groupIDcopy = this.state.groupID;
+        console.log("GROUPID COPY:" + groupIDcopy)
+        axios.get(request).then(async function(response) {
             //console.log(JSON.stringify(response.data.response.venues))
             var tempPlaces = []
             for (i = 0; i < 4; i++) {
                 if (response.data.response.venues[i]) {
-                    console.log(venueRequestUrl+response.data.response.venues[i].id + auth)
-                    axios.get(venueRequestUrl+response.data.response.venues[i].id + auth).then(response => {
+                    await axios.get(venueRequestUrl + response.data.response.venues[i].id + auth).then(response => {
                         tempPlaces.push(response.data.response.venue)
+                        console.log("HHH")
                     })
                 }
             }
+
+            console.log(this.state.groupID)
+            console.log("GROUPID COPY 2:" + groupIDcopy)
             axios.post(Constants.SERVER_URL + '/addPollPlaces',
                 {
-                    groupID: this.props.navigation.getParam('groupID', '0'),
+                    groupID: groupIDcopy,
                     places: tempPlaces
                 }
             ).then(response => {
-
+               
             })
         }).catch(error => {
-            console.log(error)
-        });
+            console.log("FOURSQUARE REQUEST FAILED:" + error)
+        }).bind(this);
     }
 
     render() {
@@ -133,7 +139,7 @@ class ThreadPollBase extends React.Component {
                         pollPlaces={this.state.pollPlaces}
                         position={this.state.position}
                         stopPoll={() => this.stopPoll()}
-                        groupID={this.props.navigation.getParam('groupID', '0')}
+                        groupID={this.state.groupID}
                     />) :
                     (<InactivePoll
                         startPoll={() => this.startPoll()}

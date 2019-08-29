@@ -65,8 +65,8 @@ class ActivePollBase extends React.Component {
                     distance={this.calculateDistance(this.state.position.latitude, this.state.position.longitude,
                         place.location.lat, place.location.lng)}
 					openStatus={place.hours.status}
-					category={places.categories[0].shortName}
-					menu={places.menu.mobileUrls}
+					category={place.categories[0].shortName}
+					menu={place.menu ? place.menu.mobileUrl : null }
                     price={place.attributes.groups[0].summary} // Not sure if this is right
 					index={index}
 					id={place.id}
